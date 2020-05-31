@@ -1,6 +1,7 @@
 /* eslint-disable require-jsdoc */
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -11,6 +12,7 @@ const upload = multer({
   fileFilter: fileFilter,
   storage: storage,
 });
+const photoPath = path.resolve(__dirname, '../../client/photo-viewer.html');
 
 function filename(req, file, callback) {
   callback(null, file.originalname);
@@ -31,6 +33,10 @@ router.post('/upload', upload.single('photo'), (req, res) => {
   } else {
     res.status(201).json({success: true});
   }
+});
+
+router.get('/photo-viewer', (req, res) => {
+  res.sendFile(photoPath);
 });
 
 module.exports = router;
