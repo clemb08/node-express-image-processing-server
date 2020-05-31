@@ -11,6 +11,7 @@ function imageProcessor(filename) {
   const monochromeDestination = uploadPathResolver('monochrome-' + filename);
   let resizeWorkedFinished = false;
   let monochromeWorkedFinished = false;
+
   return new Promise((resolve, reject) => {
     if (isMainThread) {
       try {
@@ -26,31 +27,31 @@ function imageProcessor(filename) {
             destination: monochromeDestination,
           },
         });
-        resizedWorker.on('message', (message) => {
+        resizeWorker.on('message', (message) => {
           resizeWorkedFinished = true;
-          if (monochromeWorkedFinished === true) {
-            resolve('resizedWorker finished processing');
+          if (monochromeWorkedFinished) {
+            resolve('resizeWorker finished processing');
           }
         });
         resizeWorker.on('error', (error) => {
           reject(new Error(error.message));
         });
-        resizeWorker.prependListener('exit', (code) => {
+        resizeWorker.on('exit', (code) => {
           if (code !== 0) {
             reject(new Error(`Exited with status code ${code}`));
           }
         });
         monochromeWorker.on('message', (message) => {
           monochromeWorkedFinished = true;
-          if (resizeWorkedfinished === true) {
-            resolve('monochrome finished processing');
+          if (resizeWorkedFinished) {
+            resolve('monochromeWorker finished processing');
           }
         });
         monochromeWorker.on('error', (error) => {
           reject(new Error(error.message));
         });
         monochromeWorker.on('exit', (code) => {
-          if (code === 0) {
+          if (code !== 0) {
             reject(new Error(`Exited with status code ${code}`));
           }
         });
@@ -63,8 +64,8 @@ function imageProcessor(filename) {
   });
 }
 
-function uploadPathResolver(filename, ) {
-  path.resolve(__dirname, '../uploads', filename);
+function uploadPathResolver(filename) {
+  return path.resolve(__dirname, '../uploads', filename);
 }
 
 module.exports = imageProcessor;

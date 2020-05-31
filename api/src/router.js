@@ -32,14 +32,14 @@ function fileFilter(req, file, callback) {
 router.post('/upload', upload.single('photo'), async (req, res) => {
   if (req.fileValidationError) {
     res.status(400).json({error: req.fileValidationError});
-  } else {
-    res.status(201).json({success: true});
-  }
+  } 
+
   try {
     await imageProcessor(req.file.filename);
   } catch (err) {
 
   }
+  return res.status(201).json({success: true});
 });
 
 router.get('/photo-viewer', (req, res) => {
