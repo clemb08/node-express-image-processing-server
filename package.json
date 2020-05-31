@@ -9,7 +9,7 @@
     "test:module-2": "node node_modules/mocha/bin/mocha ./test/module-2/*test.js || true",
     "test:module-3": "node node_modules/mocha/bin/mocha ./test/module-3/*test.js || true",
     "test:module-4": "node node_modules/mocha/bin/mocha ./test/module-4/*test.js || true",
-    "start": "node api/index.js || true"
+    "start": "nodemon api/index.js || true"
   },
   "author": "",
   "license": "ISC",
